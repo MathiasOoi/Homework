@@ -1,2 +1,5 @@
 in ft 12
 ft yards 3
+yards meters 1.0936
+cm meters 100
+cm dm 10

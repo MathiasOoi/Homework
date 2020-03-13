@@ -5,8 +5,11 @@ with open("conversions.txt", "r") as fin:
     for i in range(len(conversions)):
         tem = {}
         line = conversions[i].split()
-        tem[line[1]] = int(line[2])
-        d[line[0]] = tem
+        if line[0] in d.keys():
+            d[line[0]].update({line[1]:float(line[2])})
+        else:
+            tem[line[1]] = float(line[2])
+            d[line[0]] = tem
 
 
 with open("requests.txt", "r") as requests:
@@ -15,20 +18,44 @@ with open("requests.txt", "r") as requests:
         r.append(line.split())
     requests.close()
 
+"""
+ft yard meter cm dm
+"""
+def path_correct(path, start, end):
+    if path[0] == start and path[-1] == end:
+        for i in range(len(path) - 1):
+            print(path[i])
+            print(i)
+            if path[i+1] in list(d[path[i]].keys()):
+                print('a')
+                continue
+            else:
+                return False
+        return True
+    return False
 
-def solve(value, start, end):
-    if start in d.keys() and end in d.keys():
-        if start in d[end].keys():
-            return str(value*d[end][start]) + " " + end
-        elif end in d[start].keys():
-            return str(value/d[start][end]) + " " + end
-    elif start in d.keys():
-        if end in d[list(d[start].keys())[0]].keys():
-            return str(value/d[list(d[start].keys())[0]][end]/d[start][list(d[start].keys())[0]]) + " " + end
-    elif start in d[list(d[end].keys())[0]].keys():
-        return str(value*d[list(d[end].keys())[0]][start]*d[end][list(d[end].keys())[0]]) + " " + end
 
 
-for i in r:
-    print(solve(int(i[0]), i[1], i[2]))
+
+def find_path(start, end):
+    path = [start]
+    while not path_correct(path, start, end):
+        nextKey = list(d[start].keys())[0]
+        path.append(nextKey)
+    path.append(end)
+    return path
+
+
+path = ["ft", "yards", "meter", "cm", "dm"]
+print(d)
+print(path_correct(["ft", "yards", "meter", "cm", "dm"], "ft", "dm"))
+"""
+ft dm
+ft - yard
+yard - meter
+meter - cm
+cm - dm
+"""
+#for i in r:
+    #print(solve(int(i[0]), i[1], i[2]))
 
