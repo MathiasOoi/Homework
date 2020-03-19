@@ -23,17 +23,8 @@ ft yard meter cm dm
 """
 def path_correct(path, start, end):
     if path[0] == start and path[-1] == end:
-        for i in range(len(path) - 1):
-            print(path[i])
-            print(i)
-            if path[i+1] in list(d[path[i]].keys()):
-                print('a')
-                continue
-            else:
-                return False
         return True
     return False
-
 
 
 
@@ -46,9 +37,10 @@ def find_path(start, end):
     return path
 
 
-path = ["ft", "yards", "meter", "cm", "dm"]
-print(d)
-print(path_correct(["ft", "yards", "meter", "cm", "dm"], "ft", "dm"))
+"""
+dm - ft
+dm - cm - meters - yards
+"""
 """
 ft dm
 ft - yard
