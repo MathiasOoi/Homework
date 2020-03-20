@@ -27,12 +27,16 @@ def dict_reciprocal(dictionary):
     d_copy = dictionary.copy()
     for key, d in d_copy.items():
         temp_dict = {}
-        for value, multiplier in d.items():
+        l = list(d.items())
+        for i in range(0, len(l)):
+            value = l[i][0]
+            multiplier = l[i][1]
             temp_dict[key] = 1/multiplier
             if value in dictionary.keys():
                 dictionary[value].update(temp_dict)
             else:
                 dictionary[value] = temp_dict
+
 
 def path_correct(path, start, end):
     if path[0] == start and path[-1] == end:
@@ -49,32 +53,27 @@ def find_path(start, end):
             next_key = list(d[path[-1]].keys())[0]
             multiplier *= list(d[path[-1]].values())[0]
         else:
-            index = random.randint(1, len(len(d[path[-1]])))
+            index = random.randint(0, len(d[path[-1]]) - 1)
             next_key = list(d[path[-1]].keys())[index]
-            multiplier *= list(d[path[-1]].values())[index]
+            multiplier *= d[path[-1]][next_key]
         path.append(next_key)
-    return path, multiplier
+    return multiplier
+
+def convert(n, start, end):
+    multiplier = find_path(start, end)
+    x = float(n) / multiplier
+    return "{} {}".format(round(x, 2), end)
 
 
 dict_reciprocal(d)
 print(d)
-path = ["dm"]
-multiplier = 1
-next_key = list(d[path[-1]].keys())[0]
-print(next_key)
-multiplier *= list(d[path[-1]].values())[0]
-print(multiplier)
+print(find_path("dm", "ft"))
 """
 dm - ft
 dm - cm - meters - yards
 """
-"""
-ft dm
-ft - yard
-yard - meter
-meter - cm
-cm - dm
-"""
-#for i in r:
-    #print(solve(int(i[0]), i[1], i[2]))
+for i in r:
+    print(convert(i[0], i[1], i[2]))
+
+
 
