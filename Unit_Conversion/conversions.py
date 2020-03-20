@@ -20,9 +20,7 @@ with open("requests.txt", "r") as requests:
         r.append(line.split())
     requests.close()
 
-"""
-ft yard meter cm dm
-"""
+
 def dict_reciprocal(dictionary):
     d_copy = dictionary.copy()
     for key, d in d_copy.items():
@@ -44,7 +42,6 @@ def path_correct(path, start, end):
     return False
 
 
-
 def find_path(start, end):
     path = [start]
     multiplier = 1
@@ -59,21 +56,17 @@ def find_path(start, end):
         path.append(next_key)
     return multiplier
 
+
 def convert(n, start, end):
     multiplier = find_path(start, end)
     x = float(n) / multiplier
     return "{} {}".format(round(x, 2), end)
 
 
-dict_reciprocal(d)
-print(d)
-print(find_path("dm", "ft"))
-"""
-dm - ft
-dm - cm - meters - yards
-"""
-for i in r:
-    print(convert(i[0], i[1], i[2]))
+if __name__ == "__main__":
+    dict_reciprocal(d)
+    for i in r:
+        print(convert(i[0], i[1], i[2]))
 
 
 
