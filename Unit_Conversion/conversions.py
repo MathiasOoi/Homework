@@ -1,4 +1,3 @@
-import random
 from collections import defaultdict
 
 with open("conversions.txt", "r") as fin:
@@ -9,7 +8,6 @@ with open("conversions.txt", "r") as fin:
         # Iterate over every conversion and maps unit to dict of another unit to conversion factor
         line = i.split()
         d[line[0]] = {line[1]: float(line[2])}
-    print(d)
 
 with open("requests.txt", "r") as requests:
     r = []
@@ -28,33 +26,40 @@ def dict_reciprocal(dictionary):
                 dictionary[value] = {key: 1/multiplier}
 
 
-def path_correct(path, end):
-    if path[-1] == end:
-        return True
-    return False
+
+def find_path(start, end, dictionary):
+    # Uses BFS to find a path
+    q = [(start, [start])]
+    # Tuple of last vertex visited and path
+    while len(q) != 0:
+        (v, path) = q.pop(0)
+        for next in dictionary[v].keys() - set(path):
+            if next == end:
+                # Once correct path is discovered return it
+                return path + [next]
+            else:
+                # If the path isn't discovered append visited vertex and path plus vertex
+                q.append((next, path + [next]))
 
 
-def find_path(start, end):
-    path = [start]
-    multiplier = 1
-    while not path_correct(path, end):
-        index = random.randint(0, len(d[path[-1]]) - 1)
-        next_key = list(d[path[-1]].keys())[index]
-        multiplier *= d[path[-1]][next_key]
-        path.append(next_key)
+def find_multiplier(path, dictionary):
+    # Gets path from find_path() and calculates the conversion factor
+    multiplier = 1.0
+    for i in range(len(path)-1):
+        multiplier /= dictionary[path[i]][path[i+1]]
     return multiplier
 
 
-def convert(n, start, end):
-    multiplier = find_path(start, end)
-    x = float(n) / multiplier
-    return "{} {}".format(round(x, 2), end)
+def convert(n, start, end, dictionary):
+    path = find_path(start, end, dictionary)
+    multiplier = find_multiplier(path, dictionary) * float(n)
+    return "{} {}".format(round(multiplier, 2), end)
 
 
 if __name__ == "__main__":
     dict_reciprocal(d)
-    for i in r:
-        print(convert(i[0], i[1], i[2]))
+    for n, start, end in r:
+        print(convert(n, start, end, d))
 
 
 
