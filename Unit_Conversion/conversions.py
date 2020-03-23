@@ -10,9 +10,7 @@ with open("conversions.txt", "r") as fin:
         d[line[0]] = {line[1]: float(line[2])}
 
 with open("requests.txt", "r") as requests:
-    r = []
-    for line in requests:
-        r.append(line.split())
+    r = [line.split() for line in requests]
 
 
 def dict_reciprocal(dictionary):
