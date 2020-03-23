@@ -1,10 +1,9 @@
 from collections import defaultdict
 
 with open("conversions.txt", "r") as fin:
-    conversions = fin.readlines()
     d = defaultdict(dict)
     # Creates dict of dicts
-    for i in conversions:
+    for i in fin.readlines():
         # Iterate over every conversion and maps unit to dict of another unit to conversion factor
         line = i.split()
         d[line[0]] = {line[1]: float(line[2])}
