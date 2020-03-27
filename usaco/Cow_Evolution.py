@@ -20,14 +20,5 @@ def possibleProper(lst1, lst2):
 
 with open("evolution.out", "w") as fout:
     pairs = permutations(subpop, 2)
-    no = False
-    for pair in pairs:
-        if possibleProper(pair[0], pair[1]):
-            continue
-        else:
-            no = True
-            break
-    if not no:
-        fout.write("yes")
-    else:
-        fout.write("no")
+    yes = all(possibleProper(a,b) for (a,b) in pairs)
+    fout.write("yes" if yes else "no")
