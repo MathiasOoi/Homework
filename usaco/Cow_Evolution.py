@@ -13,21 +13,10 @@ def possibleProper(lst1, lst2):
         return True
     if set1.intersection(set2) == set():
         return True
-    if (set1 - set1.intersection(set2)).intersection(set2 - set1.intersection(set2)) == set():
-        return True
     return False
 
 
 with open("evolution.out", "w") as fout:
     pairs = permutations(subpop, 2)
-    no = False
-    for pair in pairs:
-        if possibleProper(pair[0], pair[1]):
-            continue
-        else:
-            no = True
-            break
-    if not no:
-        fout.write("yes")
-    else:
-        fout.write("no")
+    yes = all(possibleProper(a,b) for (a,b) in pairs)
+    fout.write("yes" if yes else "no")
