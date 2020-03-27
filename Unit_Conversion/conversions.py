@@ -10,7 +10,7 @@ with open("conversions.txt", "r") as fin:
 
 with open("requests.txt", "r") as requests:
     r = [line.split() for line in requests]
- 
+
 
 def dict_reciprocal(dictionary):
     # Adds reciprocal of a given dict of dicts
@@ -46,16 +46,46 @@ def find_multiplier(path, dictionary):
     return multiplier
 
 
-def convert(n, start, end, dictionary):
-    path = find_path(start, end, dictionary)
-    multiplier = find_multiplier(path, dictionary) * float(n)
+def convert(n, start, end, dictionary, source):
+    if source == start:
+        multiplier = 1/dictionary[source][end] * float(n)
+    elif source == end:
+        multiplier = dictionary[source][start]*float(n)
+    else:
+        multiplier = (1/(dictionary[start][source]*dictionary[source][end]))*float(n)
     return "{} {}".format(round(multiplier, 2), end)
+
+
+def create_conversions(dictionary):
+    # Creates a dict that maps one unit to all other units and the reciprocal
+    # Takes the first key in dict as source
+    source = list(dictionary.keys())[0]
+    conversions = defaultdict(dict)
+    ends = set()
+    # Iterate over all units
+    # Adds all other units to a set
+    for key in dictionary.keys():
+        ends.add(key)
+        for x in dictionary[key].keys():
+            ends.add(x)
+    # Remove source from the set
+    ends.remove(source)
+    # Create the dict and the reciprocals
+    for end in ends:
+        conversions[source][end] = 1/find_multiplier(find_path(source, end, dictionary), dictionary)
+        conversions[end][source] = find_multiplier(find_path(source, end, dictionary), dictionary)
+    # Return created dict and source
+    return conversions , source
 
 
 if __name__ == "__main__":
     dict_reciprocal(d)
-    for n, start, end in r:
-        print(convert(n, start, end, d))
+    conversions, source = create_conversions(d)
+    print(r)
+    print(conversions)
+    print(convert(1, "dm", "cm", conversions, "in"))
+#    for n, start, end in r:
+#        print(convert(n, start, end, conversions, source))
 
 
 
