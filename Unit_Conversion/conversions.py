@@ -1,5 +1,4 @@
 from collections import defaultdict
-
 with open("conversions.txt", "r") as fin:
     d = defaultdict(dict)
     # Creates dict of dicts
@@ -39,7 +38,7 @@ def find_path(start, end, dictionary):
 
 
 def find_multiplier(path, dictionary):
-    # Gets path from find_path() and calculates the conversion factor
+    # Calculate conversion factor given path and dict
     multiplier = 1.0
     for i in range(len(path)-1):
         multiplier /= dictionary[path[i]][path[i+1]]
@@ -47,11 +46,15 @@ def find_multiplier(path, dictionary):
 
 
 def convert(n, start, end, dictionary, source):
+    # Convert from start to end using conversion dictionary from create_conversions()
     if source == start:
+        # 1 step
         multiplier = 1/dictionary[source][end] * float(n)
     elif source == end:
+        # 1 step
         multiplier = dictionary[source][start]*float(n)
     else:
+        # 2 steps
         multiplier = (1/(dictionary[start][source]*dictionary[source][end]))*float(n)
     return "{} {}".format(round(multiplier, 2), end)
 
@@ -75,17 +78,14 @@ def create_conversions(dictionary):
         conversions[source][end] = 1/find_multiplier(find_path(source, end, dictionary), dictionary)
         conversions[end][source] = find_multiplier(find_path(source, end, dictionary), dictionary)
     # Return created dict and source
-    return conversions , source
+    return conversions, source
 
 
 if __name__ == "__main__":
     dict_reciprocal(d)
     conversions, source = create_conversions(d)
-    print(r)
-    print(conversions)
-    print(convert(1, "dm", "cm", conversions, "in"))
-#    for n, start, end in r:
-#        print(convert(n, start, end, conversions, source))
+    for n, start, end in r:
+        print(convert(n, start, end, conversions, source))
 
 
 
