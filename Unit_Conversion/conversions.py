@@ -6,11 +6,11 @@ with open("conversions.txt", "r") as fin:
     for i in fin.readlines():
         # Iterate over every conversion and maps unit to dict of another unit to conversion factor
         line = i.split()
-        d[line[0]] = {line[1]: float(line[2])}
+        d[line[0]][line[1]] = float(line[2])
 
 with open("requests.txt", "r") as requests:
     r = [line.split() for line in requests]
-
+ 
 
 def dict_reciprocal(dictionary):
     # Adds reciprocal of a given dict of dicts
