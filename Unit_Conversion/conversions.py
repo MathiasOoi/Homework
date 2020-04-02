@@ -28,7 +28,6 @@ def find_path(start, end, dictionary):
         # If the path is correct return it
         if path[-1] == end:
             return path
-
         for next in list(dictionary[path[-1]].keys()):
             if next not in path:
                 q.append(path+[next])
