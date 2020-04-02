@@ -4,3 +4,7 @@ meters yards 0.9144
 yards meters 1.0936
 cm meters 100
 dm cm 0.1
+yards km 1093.61
+yards mile 1760
+nanometer micrometer 0.001
+micrometer cm 10000
