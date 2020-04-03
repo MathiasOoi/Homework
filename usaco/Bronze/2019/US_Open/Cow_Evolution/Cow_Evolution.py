@@ -49,6 +49,4 @@ with open("evolution.out", "w") as fout:
             yes = False
             break
 
-
-#    yes = all(possibleProper(a) for a in pairs)
     fout.write("yes" if yes else "no")
