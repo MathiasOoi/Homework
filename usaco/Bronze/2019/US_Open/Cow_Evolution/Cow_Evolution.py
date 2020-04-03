@@ -1,49 +1,40 @@
-from itertools import combinations
+from collections import defaultdict
+import time
+
+start = time.time()
+
 with open("evolution.in") as fin:
     n = fin.readline()
     subpops = [line.split() for line in fin.readlines()]
-    print(subpops)
-    attributes = []
-    has_attribute = []
-    for pop in subpops:
-        for i in pop[1:]:
-            if i in attributes:
-                continue
-            attributes.append(i)
-    print(attributes)
-    for i in attributes:
-        has = []
+    attributes = set()
+    attrs = defaultdict(set)
+    for i in subpops:
+        for k in i[1:]:
+            attributes.add(k)
+    for att in attributes:
         for pop in subpops:
-            if i in pop:
-               has.append(subpops.index(pop))
-        has_attribute.append(has)
-    print(has_attribute)
+            if att in pop:
+                attrs[att].add(subpops.index(pop))
+    print(attrs)
+    print(subpops)
+    print(attributes)
 
 
-def possibleProper(pair, i):
-    if not pair:
-        return True
-    pop1 = set(subpops[pair[0]][1:])
-    pop2 = set(subpops[pair[1]][1:])
-    if pop1.issubset(pop2) or pop2.issubset(pop1):
-        return True
-    if pop1.intersection(pop2) == set():
-        return True
-    print(pair)
-    print(pop1)
-    print(pop2)
-    return False
-
-
+def possibleProper():
+    for v1 in attrs.values():
+        for v2 in attrs.values():
+            if v1 == v2:
+                continue
+            if v1.issubset(v2) or v2.issubset(v1):
+                continue
+            if v1.isdisjoint(v2):
+                continue
+            return False
+    return True
 
 
 with open("evolution.out", "w") as fout:
-    yes = True
-    for i in has_attribute:
-        for k in combinations(i, 2):
-            if possibleProper(k, i):
-                continue
-            yes = False
-            break
+    fout.write("yes" if possibleProper() else "no")
 
-    fout.write("yes" if yes else "no")
+end = time.time()
+print(end - start)
