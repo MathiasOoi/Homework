@@ -1,4 +1,6 @@
 from collections import defaultdict
+import time
+#time_start = time.time()
 with open("conversions.txt") as fin:
     d = defaultdict(dict)
     # Creates dict of dicts
@@ -18,32 +20,38 @@ def dict_reciprocal(dictionary):
             dictionary[value][key] = 1/multiplier
 
 
-def find_path(start, end, dictionary):
+def BFS(dictionary):
     # Uses BFS to find a path
-    # Initialize queue with start inside
-    q = [[start]]
-    while q:
-        # Get and remove oldest path in queue
-        path = q.pop(0)
-        # If the path is correct return it
-        if path[-1] == end:
-            return path
-        for next in list(dictionary[path[-1]].keys()):
-            if next not in path:
-                q.append(path+[next])
+    start = list(dictionary.keys())[0]
+    queue = [[start]]
+    visited = [start]
+    paths = []
+    while queue:
+        path = queue.pop()
+        for next in dictionary[path[-1]]:
+            if next in visited:
+                continue
+            visited.append(next)
+            queue.append(path + [next])
+        paths.append(path)
+    return paths[1:], start
 
 
-
-def find_multiplier(path, dictionary):
-    # Calculate conversion factor given path and dict
-    multiplier = 1.0
-    for i in range(len(path)-1):
+def create_dict(paths, dictionary):
+    conversions = defaultdict(dict)
+    conversions[paths[0][0]][paths[0][0]] = 1.0
+    for path in paths:
+        multiplier = 1.0
+        for i in range(len(path)-1):
             multiplier /= dictionary[path[i]][path[i+1]]
-    return multiplier
+        conversions[path[0]][path[-1]] = 1/multiplier
+        conversions[path[-1]][path[0]] = multiplier
+    return conversions
+
 
 
 def convert(n, start, end, dictionary, source):
-    # Convert from start to end using conversion dictionary from create_conversions()
+    # Convert from start to end using conversion dictionary from BFS()
     # 3 possible ways
     if source == start:
         multiplier = 1/dictionary[source][end] * float(n)
@@ -54,25 +62,16 @@ def convert(n, start, end, dictionary, source):
     return "{} {}".format(round(multiplier, 2), end)
 
 
-def create_conversions(dictionary):
-    # Creates a dict that maps one unit to all other units and the reciprocal
-    # Takes the first key in dict as source
-    source = list(dictionary.keys())[0]
-    conversions = defaultdict(dict)
-    other_keys = list(dictionary.keys())[1:]
-    # Create the dict and the reciprocals
-    for end in other_keys:
-        conversions[source][end] = 1/find_multiplier(find_path(source, end, dictionary), dictionary)
-        conversions[end][source] = find_multiplier(find_path(source, end, dictionary), dictionary)
-    # Return tuple of created dict and source
-    return conversions, source
-
-
 if __name__ == "__main__":
     dict_reciprocal(d)
-    conversions, source = create_conversions(d)
+#    print(d)
+    x, source = BFS(d)
+#    print(x)
+    conversions = create_dict(x, d)
+#    print(conversions)
     for n, start, end in r:
         print(convert(n, start, end, conversions, source))
-
+#    end = time.time()
+#    print(end-time_start)
 
 
