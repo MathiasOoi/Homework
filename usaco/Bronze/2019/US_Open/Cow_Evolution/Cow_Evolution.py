@@ -18,12 +18,9 @@ with open("evolution.in") as fin:
                has.append(subpops.index(pop))
         has_attribute.append(has)
     print(has_attribute)
+
+
 def possibleProper(pair, i):
-    def is_intersect(lst1, lst2):
-        for i in lst1:
-            if i in lst2:
-                return True
-        return False
     if not pair:
         return True
     pop1 = set(subpops[pair[0]][1:])
