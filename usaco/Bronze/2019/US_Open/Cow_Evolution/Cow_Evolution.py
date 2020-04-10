@@ -1,7 +1,4 @@
 from collections import defaultdict
-import time
-
-#start = time.time()
 
 with open("evolution.in") as fin:
     n = fin.readline()
@@ -9,6 +6,7 @@ with open("evolution.in") as fin:
     subpops = [line.split()[1:] for line in fin.readlines()]
     attributes = set()
     attrs = defaultdict(set)
+    # Create a set of all unique attributes
     for i in subpops:
         for k in i:
             attributes.add(k)
@@ -17,9 +15,6 @@ with open("evolution.in") as fin:
         for pop in subpops:
             if att in pop:
                 attrs[att].add(subpops.index(pop))
-#    print(attrs)
-#    print(subpops)
-#    print(attributes)
 
 
 def possibleProper():
@@ -41,5 +36,4 @@ def possibleProper():
 with open("evolution.out", "w") as fout:
     fout.write("yes" if possibleProper() else "no")
 
-#end = time.time()
-#print(end - start)
+
