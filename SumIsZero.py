@@ -7,12 +7,8 @@ def SumIsZero(lst):
     for i in lst:
         x += [k + [i] for k in x]
     # Remove the empty list
-    x = x[1:]
     # Check the sums of all lists
-    for i in x:
-        if sum(i) == 0:
-            return True
-    return False
+    return any(sum(i) == 0 for i in x)
 
 
 print(SumIsZero([-1,1,2,3,3,4,4,5]))
