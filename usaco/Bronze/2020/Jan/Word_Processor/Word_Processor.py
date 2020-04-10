@@ -1,19 +1,19 @@
-def wordProcessor():
-    file = open('word.in', 'r')
-    l = file.readlines()
-    file.close()
-    n, k = l[0].split()
-    words = l[1].split()
-    out = open('word.out', 'w')
-    length = 0
-    for word in words:
-        if length + len(word) > int(k):
-            out.write('\n' + word)
-            length = len(word)
+with open("word.in") as fin:
+    # Parse data
+    n, k = [int(i) for i in fin.readline().split()]
+    words = fin.readline().split()
+
+with open("word.out", "w") as fout:
+    l = len(words[0])
+    # If the word can fir on the current line put it there
+    # Otherwise write the word on a new line
+    fout.write(words[0])
+    for word in words[1:]:
+        if l + len(word) > k:
+            fout.write('\n' + word)
+            l = len(word)
         else:
-            if length > 0:
-                out.write(' ')
-            out.write(word)
-            length += len(word)
-    out.close()
-wordProcessor()
+            fout.write(" ")
+            fout.write(word)
+            l += len(word)
+
