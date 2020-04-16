@@ -18,7 +18,15 @@ def swap(tup, curr_cow):
 
 
 with open("swap.out", "w") as fout:
-    for i in range(k):
+    org = cows[:]
+    cows = swap(swaps[0], cows)
+    cows = swap(swaps[1], cows)
+    count = 1
+    while cows != org:
+        cows = swap(swaps[0], cows)
+        cows = swap(swaps[1], cows)
+        count += 1
+    for i in range(k % count):
         cows = swap(swaps[0], cows)
         cows = swap(swaps[1], cows)
     fout.write("\n".join([str(i) for i in cows]))
