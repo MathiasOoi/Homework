@@ -50,6 +50,7 @@ def display_queens(queens, n):
             board[a][b] = "Q"
         print("Solution:" + str(k+1) + "\n" + "\n".join(s for s in [" ".join(i) for i in board]))
 
+
 if __name__ == "__main__":
     n = 4
     solutions = solve(n)
