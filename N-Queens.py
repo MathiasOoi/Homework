@@ -1,4 +1,3 @@
-# Board is a list of columns
 def can_place_queen(board, row, col):
     # Check if a queen can be placed on a given row and column on a given board
     # 1. Is it in the same row
@@ -36,23 +35,28 @@ def solve(n):
             # Remove the last element in queens
             # Go back to the previous row
             if row == 0:
-                # If you tried all possible combinations return list of solutions
-                return solutions
+                # If you tried all possible combinations return list of solutions if there are any
+                if solutions:
+                    return solutions
+                return []
+            # Else start again from the column after the one that doesn't work
             col = queens.pop() + 1
-            # Start again from the column after the one that doesn't work
             row -= 1
 
 def display_queens(queens, n):
-    for k, solution in enumerate(queens):
-        # Create a 2d matrix representing a board
-        board = [["x" for i in range(n)] for j in range(n)]
-        for a, b in enumerate(solution):
-            board[a][b] = "Q"
-        print("Solution:" + str(k+1) + "\n" + "\n".join(s for s in [" ".join(i) for i in board]))
+    if not queens:
+        print("No solution")
+    else:
+        for k, solution in enumerate(queens):
+            # Create a 2d matrix representing a board
+            board = [["x" for i in range(n)] for j in range(n)]
+            for a, b in enumerate(solution):
+                board[a][b] = "Q"
+            print("Solution:" + str(k+1) + "\n" + "\n".join(s for s in [" ".join(i) for i in board]))
 
 
 if __name__ == "__main__":
-    n = 4
+    n = 5
     solutions = solve(n)
     display_queens(solutions, n)
 
