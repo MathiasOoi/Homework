@@ -1,3 +1,5 @@
+import time
+start = time.time()
 def can_place_queen(board, row, col):
     # Check if a queen can be placed on a given row and column on a given board
     # 1. Is it in the same row
@@ -16,6 +18,8 @@ def solve(n):
             # Finds the next open column index
             # Even if it doesnt fit on the board
             col += 1
+            if col >= n:
+                break
         if col < n:
             # If column fits on the board place it on the board
             queens.append(col)
@@ -56,7 +60,8 @@ def display_queens(queens, n):
 
 
 if __name__ == "__main__":
-    n = 5
+    n = 8
     solutions = solve(n)
     display_queens(solutions, n)
+    print(time.time() - start)
 
