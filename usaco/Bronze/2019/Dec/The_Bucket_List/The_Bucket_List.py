@@ -23,6 +23,3 @@ with open("blist.out", "w") as fout:
                     buckets = buckets - avail + cows[0][2]
                 still_milking.append(cows.pop(0))
     fout.write(str(buckets))
-
-
-
