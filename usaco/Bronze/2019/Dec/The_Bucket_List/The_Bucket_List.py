@@ -4,11 +4,9 @@ with open("blist.in") as fin:
     # Create list of tuples (start-time, end-time, buckets) sorted by time
     n = int(fin.readline())
     cows = sorted([(int(s), int(t), int(b)) for (s, t, b) in [i.split() for i in fin.readlines()]], key=lambda x: x[0])
-    print(cows)
 
 with open("blist.out", "w") as fout:
-    buckets = 0
-    still_milking = []
+    buckets, still_milking = 0, []
     for time in range(1, max([i[1] for i in cows])):
         for i, k in enumerate(still_milking):
             if time == k[1]:
@@ -17,7 +15,7 @@ with open("blist.out", "w") as fout:
             avail = buckets - sum(i[2] for i in still_milking)
         if not still_milking:
             avail = buckets
-        if cows:
+        if cows and time == cows[0][0]:
             if time == cows[0][0]:
                 if cows[0][2] > avail:
                     buckets = buckets - avail + cows[0][2]
