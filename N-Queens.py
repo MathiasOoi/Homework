@@ -1,7 +1,7 @@
 import time
 start = time.time()
 def can_place_queen(board, row, col):
-    # Check if a queen can be placed on a given row and column on a given board
+    # Check if a queen can be placed on a given column and column index on a given board
     # 1. Is it in the same row
     # 2. Is it in the same column
     # 3. Is it in the same diagonal (Delta x = delta y)
@@ -12,40 +12,38 @@ def can_place_queen(board, row, col):
 
 def solve(n):
     # Store the positions of the queens as a list of column positions
-    queens, solutions, col, row = [],[], 0, 0
+    queens, solutions, col = [],[], 0,
     while True:
-        while col < n and not can_place_queen(queens, row, col):
-            # Finds the next open column index
-            # Even if it doesnt fit on the board
+        print(queens)
+        while col < n and not can_place_queen(queens, len(queens), col):
+            # Finds the next open column index on the next column
             col += 1
             if col >= n:
                 break
         if col < n:
             # If column fits on the board place it on the board
             queens.append(col)
-            if row + 1 >= n:
+            if len(queens) >= n:
+                print(queens)
                 # If there are n rows then you have a solution
                 solutions.append(queens[:])
                 queens.pop()
                 col = n
             else:
-                # If you don't have a solution and your current board is correct
-                # Go on to the next row and reset columns index to 0
-                row += 1
+                # If you don't have a solution and your current board is possible
+                # Go on to the next column and reset columns index to 0
                 col = 0
         if col >= n:
             # If the column index wont fit on the board
-            # Every solution after this would be wrong
+            # Solutions down this path will also be wrong
+            # So you should stop searching
             # Remove the last element in queens
-            # Go back to the previous row
-            if row == 0:
+            # Go back to the previous column
+            if not queens:
                 # If you tried all possible combinations return list of solutions if there are any
-                if solutions:
-                    return solutions
-                return []
-            # Else start again from the column after the one that doesn't work
+                return solutions
+            # Else start again from the same column at the next index
             col = queens.pop() + 1
-            row -= 1
 
 def display_queens(queens, n):
     if not queens:
@@ -60,7 +58,7 @@ def display_queens(queens, n):
 
 
 if __name__ == "__main__":
-    n = 8
+    n = 4
     solutions = solve(n)
     display_queens(solutions, n)
     print(time.time() - start)
