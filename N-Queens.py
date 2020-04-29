@@ -58,7 +58,7 @@ def display_queens(queens, n):
 
 
 if __name__ == "__main__":
-    n = 4
+    n = 10
     solutions = solve(n)
     display_queens(solutions, n)
     print(time.time() - start)
