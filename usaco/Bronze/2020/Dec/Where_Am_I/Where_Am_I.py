@@ -1,6 +1,5 @@
 with open("whereami.in") as fin:
-    x = fin.readline()
-    n = int(x)
+    n = int(fin.readline())
     boxes = fin.readline()
 
 
