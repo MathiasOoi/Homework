@@ -1,5 +1,6 @@
 import time
 from collections import defaultdict
+import math
 def read(text):
     with open(text) as fin:
         N = int(fin.readline())
@@ -59,6 +60,29 @@ def spatialHash(rectangles, dimensions):
                     results.add((a, b))
     return results
 
+def quadtree(rectangles, dimensions):
+    max_objects = 10
+    max_depth = 5
+    def get_quadrants(x, y, w, h):
+        half_w = math.ceil(w//2)
+        half_h = math.ceil(h//2)
+        """
+         1 | 2
+        ---|---
+         3 | 4
+        """
+        Quad_1 = getPoints((x, y+half_h, half_w, half_h))
+        Quad_2 = getPoints((x+half_w, y+half_h, half_w, half_h))
+        Quad_3 = getPoints((x, y, half_w, half_h))
+        Quad_4 = getPoints((x+half_w, y, half_w, half_h))
+        return Quad_1, Quad_2, Quad_3, Quad_4
+    print(get_quadrants(0, 0, dimensions[0], dimensions[1]))
+
+
+
+
+
+
 def display(function, time_list, text):
     print(str(function).split()[1].title() + ":")
     for i, text in enumerate(text):
@@ -73,10 +97,12 @@ def display(function, time_list, text):
 
 
 if __name__ == "__main__":
-    bf, sh, text = [], [], ["simple.txt", "medium.txt", "mixed.txt"]
-    display(bruteForce, bf, text)
-    display(spatialHash, sh, text)
-    print("Comparisons")
-    for i in range(3):
-        print(text[i])
-        print(bf[i] / sh[i])
+#    bf, sh, text = [], [], ["simple.txt", "medium.txt", "mixed.txt"]
+#    display(bruteForce, bf, text)
+#    display(spatialHash, sh, text)
+#    print("Comparisons")
+#    for i in range(3):
+#        print(text[i])
+#        print(bf[i] / sh[i])
+    s = read("simple.txt")
+    quadtree(s[0], s[1])
