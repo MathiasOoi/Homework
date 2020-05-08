@@ -10,11 +10,15 @@ class QuadTree():
         self.half_x = dimensions[0]//2 + 1
         self.half_y = dimensions[1]//2 + 1
         self.leaves = set()
+        # Initially create 4 leaves that will later on subdivide into other QuadTrees
         self.quad1 = Leaf(self.x, self.y+self.half_y, (self.half_x, self.half_y), self.rectangles)
         self.quad2 = Leaf(self.x+self.half_x, self.y+self.half_y, (self.half_x, self.half_y), self.rectangles)
         self.quad3 = Leaf(self.x, self.y, (self.half_x, self.half_y), self.rectangles)
         self.quad4 = Leaf(self.x+self.half_x, self.y, (self.half_x, self.half_y), self.rectangles)
     def insert(self, rect_index):
+        # Insert a rectangle into a Quadtree
+        # If after inserting the rectangle there are more than max_obj in the leaf
+        # Then .subdivide() the leaf
         if intersect(self.quad1.getPoints(), getPoints(self.rectangles[rect_index])):
             self.quad1.insert(rect_index)
             if len(self.quad1) > self.max_obj:
@@ -32,12 +36,14 @@ class QuadTree():
             if len(self.quad4) > self.max_obj:
                 self.quad4.subdivide()
     def get_leaves(self, node):
+        # Returns a list of tuples of leaves
         if type(node) == QuadTree:
             for child in [node.quad1, node.quad2, node.quad3, node.quad4]:
                 self.get_leaves(child)
         else:
             self.leaves.add(tuple(node.rects))
     def solve(self):
+        # Do N^2 comparison for every leaf
         for i, rect in enumerate(self.rectangles):
             self.insert(i)
         self.get_leaves(self)
@@ -65,6 +71,8 @@ class Leaf():
     def __len__(self):
         return len(self.rects)
     def subdivide(self):
+        # Turns Leaf into a QuadTree with 4 leaves
+        # If you at max_depth then set max_obj to infinity
         temp_rect = self.rects[:]
         out = QuadTree(self.x, self.y, self.dimensions, self.rectangles)
         out.max_depth -= 1
@@ -73,6 +81,7 @@ class Leaf():
         for rect in temp_rect:
             out.insert(rect)
     def getPoints(self):
+        # Returns the dimensions of the leaf (quadrant)
         return (self.x, self.y), (self.x+self.MAX_X, self.y+self.MAX_Y)
 
 

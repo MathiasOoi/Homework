@@ -11,6 +11,7 @@ class SpatialHash():
         self.d = defaultdict(list)
 
     def create_bins(self):
+    # Create a list of bins of bin_size by bin_size
         x = 0
         while x < self.MAX_X:
             y = 0
@@ -20,12 +21,14 @@ class SpatialHash():
             x += self.bin_size
 
     def insert_rects(self):
+        # Put a rect inside of a bin if it intersects with the bin
         for i, bin in enumerate(self.bins):
             for k, rect in enumerate(self.rectangles):
                 if intersect(bin, getPoints(rect)):
                     self.d[i].append(k)
 
     def solve(self):
+    # Do N^2 comparison for every bin
         self.create_bins()
         self.insert_rects()
         results = set()
