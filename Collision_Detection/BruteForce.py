@@ -1,5 +1,3 @@
-from CollisionDetection import *
-
 class BruteForce():
     def __init__(self, rectangles):
         self.rectangles = rectangles

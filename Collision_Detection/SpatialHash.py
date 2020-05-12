@@ -1,4 +1,3 @@
-from CollisionDetection import *
 from collections import defaultdict
 
 class SpatialHash():

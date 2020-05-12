@@ -1,7 +1,7 @@
-from CollisionDetection import *
+from CollisionDetection import Rectangle
 
-class QuadTree():
-    def __init__(self, dimensions, rectangles, depth = 5):
+class QuadTree:
+    def __init__(self, dimensions, rectangles, depth=5):
         """
         :param dimensions: Dimensions of QuadTree (rectangle)
         :param rectangles: List of objects of Rectangle
@@ -11,10 +11,12 @@ class QuadTree():
         self.depth = depth
         self.leaves = []
         self.children = [Leaf(Rectangle((self.dimensions.x+(i*self.dimensions.w//2+1), self.dimensions.y+(k*self.dimensions.h//2+1), self.dimensions.w//2, self.dimensions.h//2)), self.rectangles, self.depth-1) for i in range(2) for k in range(2)]
+
     def insert(self, node, rect):
         """
         Insert a rect into a QuadTree
         If this causes a leaf to go beyond max_obj, subdivide the leaf
+        :param node: A QuadTree
         :param rect: object of Rectangle
         """
         for i, child in enumerate(node.children):
@@ -25,13 +27,13 @@ class QuadTree():
                         node.children[i] = child.subdivide()
             else:
                 child.insert(child, rect)
+
     def traverse(self, parent):
         for child in self.children:
             if type(child) == Leaf:
                 parent.leaves.append(child.leaf_rects)
             else:
                 child.traverse(parent)
-
 
     def solve(self):
         for rect in self.rectangles:
@@ -45,7 +47,8 @@ class QuadTree():
                         result.add((a,b))
         return result
 
-class Leaf():
+
+class Leaf:
     def __init__(self, dimensions, rectangles, depth):
         """
         :param dimensions: Dimensions of Tree (rectangle class)
