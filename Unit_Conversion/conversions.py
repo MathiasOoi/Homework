@@ -22,6 +22,7 @@ def dict_reciprocal(dictionary):
 
 def BFS(dictionary):
     # Uses BFS to find a path
+    print(dictionary)
     start = list(dictionary.keys())[0]
     queue = [[start]]
     visited = [start]
@@ -34,6 +35,7 @@ def BFS(dictionary):
             visited.append(next)
             queue.append(path + [next])
         paths.append(path)
+    print(paths)
     return paths[1:], start
 
 
