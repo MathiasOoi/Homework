@@ -42,18 +42,17 @@ def solve(n, currString="(", openCount=1, closeCount=0):
     """
     if len(currString) == 2 * n:
         # Check if the string is of length 2n
-        if isValid(currString):
+        if openCount == closeCount:
             return 1
         return 0
-    if closeCount > n or openCount > n:
-        # Any string with closeCount or openCount more than n will not be balanced
+    if closeCount > openCount:
         return 0
     return 0 if not n else solve(n, currString + "(", openCount + 1, closeCount) + solve(n, currString + ")", openCount,closeCount + 1)
 
 
 if __name__ == "__main__":
     unittest.main(exit=False)
-    for i in range(10):
+    for i in range(5):
         start = time.time()
         print("n = " + str(i))
         print("Solution: " + str(solve(i)))
