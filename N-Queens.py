@@ -51,7 +51,7 @@ def display_queens(queens, n):
     else:
         for k, solution in enumerate(queens):
             # Create a 2d matrix representing a board
-            board = [["x" for i in range(n)] for j in range(n)]
+            board = [["x" for _ in range(n)] for _ in range(n)]
             for a, b in enumerate(solution):
                 board[a][b] = "Q"
             print("Solution:" + str(k+1) + "\n" + "\n".join(s for s in [" ".join(i) for i in board]))

@@ -10,5 +10,4 @@ def SumIsZero(lst):
     # Check the sums of all lists
     return any(sum(i) == 0 for i in x)
 
-
 print(SumIsZero([-1,1,2,3,3,4,4,5]))
