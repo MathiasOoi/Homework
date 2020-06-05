@@ -9,6 +9,7 @@ with open("conversions.txt") as fin:
         line = i.split()
         d[line[0]][line[1]] = float(line[2])
 
+
 with open("requests.txt") as requests:
     r = [line.split() for line in requests]
 
@@ -66,6 +67,7 @@ def convert(n, start, end, dictionary, source):
 
 if __name__ == "__main__":
     dict_reciprocal(d)
+    print(d)
 #    print(d)
     x, source = BFS(d)
 #    print(x)

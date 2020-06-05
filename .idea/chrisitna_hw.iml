@@ -6,7 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/Collision_Detection/docs" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.8 (venv)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.7 (chrisitna_hw)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
