@@ -65,7 +65,7 @@ def solve_memo_cheat(n, openCount=0, closeCount=0):
     if closeCount > openCount:
         return 0
     return solve_memo_cheat(n, openCount + 1, closeCount) + solve_memo_cheat(n, openCount,closeCount + 1)
-
+c = {}
 def solve_memo(n, cache, openCount=0, closeCount=0):
     """
     :param n: Integer
@@ -87,10 +87,24 @@ def solve_memo(n, cache, openCount=0, closeCount=0):
         return 0
     result = solve_memo(n, cache, openCount + 1, closeCount) + solve_memo(n, cache, openCount, closeCount + 1)
     cache[(openCount, closeCount)] = result
+    global c
+    c = cache
     return result
+
+def genPairs(n):
+    for i in reversed(range((2*n)+1)):
+        for k in reversed(range((2*n)-i+1)):
+            if i + k <= 2*n+1 and k < i + 2:
+                yield (i, k)
+
+def solve_iter(n):
+    total = 0
+    for pair in genPairs(n):
+        pass
 
 
 def test(func, i):
+    # Helped function to use the multiple methods to solve balanced strings
     start = time.time()
     print(str(func).split()[1] if str(func).split()[1] != "object" else "solve_memo_cheat")
     print("n = " + str(i))
@@ -100,6 +114,15 @@ def test(func, i):
 
 if __name__ == "__main__":
 #    unittest.main(exit=False)
-    for i in range(13):
-        for func in [solve, solve_memo, solve_memo_cheat]:
-            test(func, i)
+#    for i in range(13):
+#        for func in [solve, solve_memo, solve_memo_cheat]:
+#            test(func, i)
+    print(solve_memo(5, {}))
+    print(c)
+    u = {}
+    for key, value in c.items():
+        if value:
+            u[key] = value
+    print(u)
+    for i in genPairs(5):
+        print(i)
