@@ -65,7 +65,7 @@ def solve_memo_cheat(n, openCount=0, closeCount=0):
     if closeCount > openCount:
         return 0
     return solve_memo_cheat(n, openCount + 1, closeCount) + solve_memo_cheat(n, openCount,closeCount + 1)
-c = {}
+
 def solve_memo(n, cache, openCount=0, closeCount=0):
     """
     :param n: Integer
@@ -87,8 +87,6 @@ def solve_memo(n, cache, openCount=0, closeCount=0):
         return 0
     result = solve_memo(n, cache, openCount + 1, closeCount) + solve_memo(n, cache, openCount, closeCount + 1)
     cache[(openCount, closeCount)] = result
-    global c
-    c = cache
     return result
 
 def genPairs(n):
@@ -117,7 +115,8 @@ if __name__ == "__main__":
 #    for i in range(13):
 #        for func in [solve, solve_memo, solve_memo_cheat]:
 #            test(func, i)
-    print(solve_memo(5, {}))
+    c = {}
+    print(solve_memo(5, c))
     print(c)
     u = {}
     for key, value in c.items():
