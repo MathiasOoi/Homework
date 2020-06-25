@@ -104,7 +104,7 @@ def test(n, bots):
 
 if __name__ == "__main__":
 #    unittest.main(exit=False)
-    test(8, [BruteForceBot, Bot])
+    test(3, [BruteForceBot, Bot])
 
 
 
