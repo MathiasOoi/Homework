@@ -8,6 +8,7 @@ import random
 import unittest
 import itertools
 import time
+from collections import defaultdict
 
 class BruteForceBot:
     def __init__(self, game):
@@ -69,30 +70,21 @@ class OptimizedBot:
     def __init__(self, game):
         self.game = game
         self.possible = list(itertools.permutations("012345789", self.game.numDigits()))
-        self.outcomes = set(self.initializeOutcome())
+        self.outcomes = self.initializeOutcome(self.game.numDigits())
         self.k = 0
 
 
-    def initializeOutcome(self, outcome=(0, 0), x=[]):
-        if sum(outcome) == self.game.numDigits():
-            return x
-        x.append((outcome[0]+1, outcome[1]))
-        x.append((outcome[0], outcome[1] + 1))
-        return self.initializeOutcome((outcome[0]+1, outcome[1])) + (self.initializeOutcome((outcome[0], outcome[1]+1)))
+    def initializeOutcome(self, n):
+        return [(p, f) for p in range(n + 1) for f in range(n + 1) if p + f <= n]
 
     def getPossibleOutcomes(self):
         return set(outcome for outcome in self.outcomes if sum(outcome) >= self.k)
 
     def getElims(self, guess):
-        minElims = float("inf")
-        for outcome in self.getPossibleOutcomes():
-            if self.game.numDigits() == 2 and outcome == (1, 1):
-                continue
-            x = len(list(k for k in self.possible if outcome == PicoFermiBagel(k, guess)))
-            if x < minElims:
-                minElims = x
-        return minElims
-
+        omap = defaultdict(int)
+        for k in self.possible:
+            omap[PicoFermiBagel(k, guess)] += 1
+        return min(omap.values())
     def getNextGuess(self):
         bestGuess, mostElims = (), 0
         for guess in self.possible:
@@ -102,6 +94,7 @@ class OptimizedBot:
         return bestGuess
 
     def play(self):
+        print(self.game.num)
         guess = random.choice(self.possible)
         p, f = self.game.takeGuess(guess)
         self.possible = [hypo for hypo in self.possible if (p, f) == PicoFermiBagel(hypo, guess)]
@@ -160,8 +153,9 @@ def test(n, bots):
 
 if __name__ == "__main__":
     #test(3, [BruteForceBot, EliminateThenIterateBot, Bot])
-    x = OptimizedBot(Game(2))
-    print(x.play())
+    x = OptimizedBot(Game(3))
+    print(x.outcomes)
+    x.play()
 
 
 

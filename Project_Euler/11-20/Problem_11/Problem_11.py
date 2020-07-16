@@ -3,19 +3,27 @@ with open("grid.txt") as fin:
     print(grid)
     # 20x20
 
-def HorVer(grid):
-    output = 0
-    for i in range(len(grid)):
-        for k in range(len(grid)-4):
-            x = 1
-            y = 1
-            for n in range(k, k+4):
-                if not output:
-                    print(grid[i][n])
-                x *= grid[i][n]
-                y *= grid[n][i]
-            output = max(x, y, output)
-    return output
+def solve():
+    highest, temp = 0, 0
+    for i in range(20):
+        for k in range(20):
+            if i < 17:
+                temp = grid[i][k] * grid[i + 1][k] * grid[i + 2][k] * grid[i + 3][k]
+            if temp > highest:
+                highest = temp
+            if k < 17:
+                temp = grid[i][k] * grid[i][k + 1] * grid[i][k + 2] * grid[i][k + 3]
+                if temp > highest:
+                    highest = temp
+            if i < 17 and k < 17:
+                temp = grid[i][k] * grid[i + 1][k + 1] * grid[i + 2][k + 2] * grid[i + 3][k + 3]
+                if temp > highest:
+                    highest = temp
+            if i < 17 and k > 2:
+                temp = grid[i][k] * grid[i + 1][k - 1] * grid[i + 2][k - 2] * grid[i + 3][k - 3]
+                if temp > highest:
+                    highest = temp
+    print(highest)
 
-
-print(HorVer(grid))
+if __name__ == "__main__":
+    solve()
