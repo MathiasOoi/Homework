@@ -1,8 +1,8 @@
 import random
 import math
 import time
-from GenTestCases import *
 import os
+from GenTestCases import *
 
 
 def oneLayer(rects):
@@ -78,12 +78,6 @@ def cornerGreedy(rects, n):
         #print(corners)
     #print(placed)
     return max(maxX, maxY), sum(x.w*x.h for x in sortedRects)/max(maxX, maxY)**2
-
-
-
-
-
-
 
 
 def test():
