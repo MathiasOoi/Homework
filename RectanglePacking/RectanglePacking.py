@@ -2,7 +2,8 @@ import random
 import math
 import time
 import os
-from GenTestCases import *
+from collections import defaultdict
+from helper import *
 
 
 def oneLayer(rects):
@@ -42,7 +43,7 @@ def cornerGreedy(rects, n):
     # if the rectangle can fit without expanding the grid then place it there
     # otherwise find a corner that would minimize the expansion of the grid
     # returns length of square rectangles fit in, packing density
-    corners = [(0,0)] # list of available corners (x, y)
+    corners = defaultdict(lambda: None); corners[(0, 0)] = None # ordered set of corners
     sortedRects = sorted(rects, key=lambda x: -x.h*x.w) # Sort rects by decreasing area
     placed = []  # list of placed rectangles
     maxX, maxY = 0, 0
@@ -50,7 +51,6 @@ def cornerGreedy(rects, n):
         rectCopy = rect
         bestPoint = (0, 0)  # (x, y) value of corner in which placing the rectangle would minimize expansion
         k = (float("inf"), float("inf"))  # (amount x would be expanded, amount y would be expanded)
-        placedRect = False
         for corner in corners:
             rectCopy.updateCords(corner[0], corner[1])
             if all(not rectCopy.intersect(rectOnGrid) for rectOnGrid in placed):
@@ -69,13 +69,15 @@ def cornerGreedy(rects, n):
                     k = (0, 0)
                     break
         rect.updateCords(bestPoint[0], bestPoint[1])
+        del corners[bestPoint]  # remove the point where rectangle was placed
         placed.append(rect)
-        maxX += k[0] - rect.w
-        maxY += k[1] - rect.h
-        corners.remove(bestPoint)  # remove the point where rectangle was placed
-        corners.extend(rect.corners())
-        #print(maxX, maxY)
-        #print(corners)
+        if bool(max(k)):
+            maxX += k[0] - rect.w
+            maxY += k[1] - rect.h
+        for newCorner in rect.corners():
+            if all(not pointInRect(newCorner, r) for r in placed):
+                corners[newCorner] = None
+    #print(corners)
     #print(placed)
     return max(maxX, maxY), sum(x.w*x.h for x in sortedRects)/max(maxX, maxY)**2
 

@@ -38,6 +38,15 @@ def parseInput(file):
         rects = [Rectangle(tuple(int(k) for k in i.split())) for i in fin]
         return rects, n
 
+def pointInRect(point, rect):
+    """
+    returns whether or not a point lies inside a rectangle
+    :param point: tuple (x, y)
+    :param rect: Rectangle
+    :return: Boolean
+    """
+    return rect.x < point[0] < rect.x + rect.w and rect.y < point[1] < rect.y + rect.h
+
 
 with open(os.getcwd()+"\\cases\\index.txt") as fin:
     FILENAMES = [line.strip() for line in fin]
