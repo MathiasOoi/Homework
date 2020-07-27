@@ -7,17 +7,19 @@ import os
 
 def oneLayer(rects):
     # Puts all rectangles in one row
+    # returns length of square rectangles fit in, packing density
     rectCopy = rects.copy()
     currx = 0
     for i in range(len(rectCopy)):
         rectCopy[i].updateCords(currx, 0)
         currx += rectCopy[i].w
-    return rectCopy[-1].x + rectCopy[-1].w
+    return rectCopy[-1].x + rectCopy[-1].w, sum(x.w*x.h for x in rectCopy)/(rectCopy[-1].x + rectCopy[-1].w)**2
 
 
 def greedy(rects, n):
     # Place sqrt of amount of rectangles in one row
     # Keep on repeating that until there are no more rectangles
+    # returns length of square rectangles fit in, packing density
     sortedRects = sorted(rects, key=lambda x: -x.h) # Sorts rects by height
     rectsPerLayer = math.ceil(math.sqrt(n))
     maxy, maxX = 0, 0
@@ -33,13 +35,14 @@ def greedy(rects, n):
         maxy += y
         if currx > maxX:
             maxX = currx
-    return max(maxX, maxy)
+    return max(maxX, maxy), sum(x.w*x.h for x in sortedRects)/max(maxX, maxy)**2
 
 def cornerGreedy(rects, n):
     # try placing a rectangle on every corner
     # if the rectangle can fit without expanding the grid then place it there
     # otherwise find a corner that would minimize the expansion of the grid
-    corners = set(); corners.add((0, 0))  # set of available corners (x, y)
+    # returns length of square rectangles fit in, packing density
+    corners = [(0,0)] # list of available corners (x, y)
     sortedRects = sorted(rects, key=lambda x: -x.h*x.w) # Sort rects by decreasing area
     placed = []  # list of placed rectangles
     maxX, maxY = 0, 0
@@ -70,11 +73,11 @@ def cornerGreedy(rects, n):
         maxX += k[0] - rect.w
         maxY += k[1] - rect.h
         corners.remove(bestPoint)  # remove the point where rectangle was placed
-        corners.update(set(rect.corners()))
+        corners.extend(rect.corners())
         #print(maxX, maxY)
         #print(corners)
     #print(placed)
-    return max(maxX, maxY)
+    return max(maxX, maxY), sum(x.w*x.h for x in sortedRects)/max(maxX, maxY)**2
 
 
 
@@ -86,15 +89,15 @@ def cornerGreedy(rects, n):
 def test():
     for file in FILENAMES:
         rects, n = parseInput(file)
-        print(file)
+        print(file[:-4])
         start = time.time()
-        print("oneLayer: %s"%(oneLayer(rects)))
+        print("oneLayer: %s"%(str(oneLayer(rects))))
         print("time: %s"%(time.time()-start))
         start = time.time()
-        print("greedy: %s"%(greedy(rects, n)))
+        print("greedy: %s"%(str(greedy(rects, n))))
         print("time: %s"%(time.time()-start))
         start = time.time()
-        print("cornerGreedy: %s" % (cornerGreedy(rects, n)))
+        print("cornerGreedy: %s" % (str(cornerGreedy(rects, n))))
         print("time: %s\n" % (time.time() - start))
 
 if __name__ == "__main__":
