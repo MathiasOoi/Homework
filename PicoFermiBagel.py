@@ -83,7 +83,7 @@ class OptimizedBot:
     def getElims(self, guess):
         omap = defaultdict(int)
         for k in self.possible:
-            omap[PicoFermiBagel(k, guess)] += 1
+            omap[PicoFerm Bagel(k, guess)] += 1
         return min(omap.values())
     def getNextGuess(self):
         bestGuess, mostElims = (), 0

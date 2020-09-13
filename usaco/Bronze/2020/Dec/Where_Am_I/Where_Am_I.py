@@ -1,19 +1,17 @@
 with open("whereami.in") as fin:
     n = int(fin.readline())
-    boxes = fin.readline()
-
-
-def correct(string, k):
-    subStr = set()
-    for i in range(len(string) - k):
-        if string[i:i+k] in subStr:
-            return False
-        subStr.add(string[i:i+k])
-    return True
-
+    mailboxes = fin.readline()
+    print(n, mailboxes)
 
 with open("whereami.out", "w") as fout:
-    for i in range(1, n):
-        if correct(boxes, i):
-            fout.write(str(i))
+    for k in range(3, n):
+        lst = []
+        for i in range(n-k+1):
+            lst.append(mailboxes[i:i+k])
+        print(lst)
+        for _ in range(len(lst)):
+            if lst.pop() in lst:
+                break
+        if not lst:
+            fout.write(str(k))
             break

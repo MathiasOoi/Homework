@@ -1,18 +1,9 @@
-with open("test.txt") as fin:
-    k, n = (int(i) for i in fin.readline().split())
-    cows = [[int(i) for i in k.split()] for k in fin]
-    print(cows)
+from math import factorial as f
 
-def pairs(lst):
-    l = set()
-    for i in range(len(lst)-1):
-        for k in range(i, len(lst)-1):
-            l.add((lst[i], lst[k]))
-    return l
+def ncr(n, r):
+    return int(f(n)/(f(r)*f(n-r)))
 
-with open("text.txt", "w") as fout:
-    consistent_pairs = pairs(cows[0])
-    for session in cows[1:]:
-        print(session)
-        consistent_pairs = consistent_pairs.intersection(pairs(session))
-    print(consistent_pairs)
+if __name__ == "__main__":
+    print([[ncr(n, r) for r in range(0, n+1)] for n in range(15)])
+
+
