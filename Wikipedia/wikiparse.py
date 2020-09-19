@@ -45,7 +45,7 @@ def parsePage(title, text):
         lineCounter = 0
         for line in infobox:
             lineCounter += 1
-            if line[0] == "|":  # Checks if that line has information
+            if line[0] == "|":  # Checks if that line has a new key
                 s = line.strip("| ")
                 for i in range(len(s)):
                     if s[i] == "=":
@@ -66,6 +66,11 @@ def parsePage(title, text):
                             d[key].append(item.strip("}").strip("{").strip("[[").strip("]]"))
                     elif s[i+4: i+13] == "plainlist":
                         print(line)
+                        for currPlainlist in range(lineCounter, len(infobox)):
+                            if infobox[currPlainlist][:2] == "}}":
+                                break
+                        plainlist = infobox[lineCounter: currPlainlist]
+
                     else:
                         pass
 
@@ -112,7 +117,7 @@ with open("sample.txt", encoding="utf-8") as fin:
     s = fin.read()
     parsePage("aa", s)
 
-if __name__ == "__main__":
+if False:
     pass
     for event, elem in etree.iterparse(pathWikiXML, events=('start', 'end')):
         tname = strip_tag_name(elem.tag)
