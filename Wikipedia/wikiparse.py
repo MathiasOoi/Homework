@@ -9,6 +9,7 @@ import os
 PATH_WIKI_XML = 'D:\\Wikipedia\\'
 FILENAME_WIKI = 'enwiki-20200901-pages-articles-multistream.xml'
 
+connection = sqlite3.connect('wiki.db')
 
 
 def hms_string(sec_elapsed):
@@ -37,11 +38,10 @@ def parsePage(title, text):
     def parseInfobox(title, infobox):
         """
         Helper function to help parse infobox
-        :param infobox: String
+        :param infobox: List of infobox split by \n
         :return: Dict that maps the title of the page to another dict
         """
         d = defaultdict(list)
-        infobox = infobox.split("\n")
         lineCounter = 0
         for line in infobox:
             lineCounter += 1
@@ -51,55 +51,99 @@ def parsePage(title, text):
                     if s[i] == "=":
                         break
                 key = s[:i].strip(" ")
-                if s[i+2] != "{":
-                    for k in range(i, len(s)):
-                        if s[k] == "<":
-                            break
-                    d[key].append(s[i+2: k+1])
+                try:
+                    if s[i+2] != "{":
+                        for k in range(i, len(s)):
+                            if s[k] == "<":  # removes an editor note "<!--- [note]"
+                                break
+                        # Appends value to a key if that key only has ONE value
+                        # I.e. "| children            = 8"
+                        d[key].append(s[i+2: k+1])
+                except IndexError:
+                    continue
                 else:
                     if s[i+4: i+9] == "hlist":
+                        # Parses out an hlist which is an horizontal list seperated by "|"
+                        # i.e. "{{hlist|elem1|elem2|elem3}}"
                         for k in range(i+9, len(s)):
                             if s[k] == "<":
                                 break
+                        # Split the hlist
                         l = s[i+10: k].split("|")
-                        for item in l:
+                        for item in l:  # Append every item in the hlist to the dict
                             d[key].append(item.strip("}").strip("{").strip("[[").strip("]]"))
-                    elif s[i+4: i+13] == "plainlist":
-                        print(line)
-                        for currPlainlist in range(lineCounter, len(infobox)):
-                            if infobox[currPlainlist][:2] == "}}":
+                    elif s[i+4: i+13] == "flatlist" or s[i+4: i+13] == "plainlist":
+                        # Parses out a flatlist and plainlist
+                        # https://en.wikipedia.org/wiki/Template:Plainlist
+                        # https://en.wikipedia.org/wiki/Template:Flatlist
+                        for currlst in range(lineCounter, len(infobox)):
+                            if infobox[currlst][:2] == "}}":
                                 break
-                        plainlist = infobox[lineCounter: currPlainlist]
+                        lst = infobox[lineCounter: currlst]
+                        for item in lst:
+                            d[key].append(item.strip("*").strip("{").strip("}").replace("[", "").replace("]", "").replace("end=div", ""))
+        return d
 
-                    else:
-                        pass
+    def findInfobox(text):
+        """
+        Given some wikipedia article return a string of the infobox
+        :param text: String
+        :return: String
+        """
+        openCurly = 0
+        start, stop = 0, 0
+        text = text.split("\n")
+        for i in range(len(text)):
+            if text[i][2:9] == "Infobox":
+                start = i
+            if start:
+                for char in text[i]:
+                    if char == "{":
+                        openCurly += 1
+                    elif char == "}":
+                        openCurly -= 1
+                if not openCurly:
+                    stop = i
+                    break
+        return text[start: stop+1]
+
+    def findGenderAndWords(text):
+        """
+        Counts the male and female pronouns in the text and then returns the gender
+        1. Male
+        2. Female
+        3. Other
+        :param text: List
+        :return: String
+        """
+        malePronoun = ["him", "his", "he", "he's"]
+        femalePronoun = ["her", "she","she's", "hers"]
+        words = len(text)
+        maleCount, femaleCount = 0, 0
+        for word in text:
+            word = word.strip("*").strip("{").strip("}").replace("[", "").replace("]", "")
+            if word in malePronoun:
+                maleCount += 1
+            elif word in femalePronoun:
+                femaleCount += 1
+        if maleCount > femaleCount:
+            return "male", words
+        elif femaleCount > maleCount:
+            return "female", words
+        else:
+            return "other", words
 
 
-        print(d)
 
-    parseInfobox(title, """{{Infobox person ii
-| honorific_suffix    = {{post-nominals|CBE}}
-| image               = David Gilmour Argentina 2015 (cropped).jpg<!-- NOTE: Do not replace David Gilmour Argentina 2015 (cropped).jpg without consensus on the talk page -->
-| alt                 = Gilmour playing onstage
-| caption             = Gilmour performing in 2015
-| birth_name          = David Jon Gilmour
-| birth_date          = {{Birth date and age|1946|03|06|df=y}}
-| birth_place         = [[Cambridge]], England
-| occupation          = {{hlist|Singer|songwriter|musician}}<!--Please do not add to this list without first discussing your proposal on the talk page. -->
-| spouse              = {{plainlist|
-*{{marriage|[[Ginger Gilmour|Virginia "Ginger" Hasenbein]]|1975|1990|end=div}}
-*{{marriage|[[Polly Samson]]|1994}}
-}}
-| years_active        = 1963–present
-| children            = 8
-| website             = {{URL|davidgilmour.com}}
-| module              = {{Infobox musical artist|embed=yes
-| background          = solo_singer
-| genre               = {{hlist|[[Progressive rock]]|[[psychedelic rock]]|[[art rock]]|[[Ambient music|ambient]]|[[blues rock]]}}
-| instrument          = {{hlist|Guitar|vocals}}<!--- If you think an instrument should be listed or removed, a discussion to reach consensus is needed first per: https://en.wikipedia.org/wiki/Template:Infobox_musical_artist#instrument--->
-| label               = {{hlist|[[Columbia Graphophone Company|EMI Columbia]]|[[Harvest Records|Harvest]]|[[Capitol Records|Capitol]]|[[Columbia Records|Columbia]]|[[Sony Music Entertainment|Sony]]|[[EMI]]}}
-| associated_acts     = {{hlist|[[Pink Floyd]]|[[Jokers Wild (band)|Jokers Wild]]|[[Syd Barrett]]|[[Kate Bush]]|[[The Strat Pack]]|[[the Orb]]|[[Paul McCartney]]|[[Roy Harper (singer)|Roy Harper]]}}<!--Please do not add to this list without first discussing your proposal on the talk page. -->
-}}}}""")
+    d = parseInfobox(title, findInfobox(text))
+    gender, words = findGenderAndWords(text.split())
+    print(d)
+    print(gender)
+    print(words)
+
+
+
+
 
 
 
@@ -117,7 +161,7 @@ with open("sample.txt", encoding="utf-8") as fin:
     s = fin.read()
     parsePage("aa", s)
 
-if False:
+if __name__ == "__main__":
     pass
     for event, elem in etree.iterparse(pathWikiXML, events=('start', 'end')):
         tname = strip_tag_name(elem.tag)
@@ -132,13 +176,14 @@ if False:
                 # Do not pick up on revision id's
                 inrevision = True
         else:
-            if tname == "text":
-                pass
             if tname == 'title':
                 title = elem.text
+                print(title)
+            if tname == "text":
+                parsePage(title, elem.text)
             elif tname == 'page':
                 totalCount += 1
-            if totalCount > 1:
+            if totalCount > 0:
                 break
 
             if totalCount > 1 and (totalCount % 100000) == 0:
