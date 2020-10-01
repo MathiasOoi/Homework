@@ -23,11 +23,6 @@ def strip_tag_name(t):
 
 
 def exclude(elem):
-    # Skip articles with special titles
-    title = elem.find("title").text
-    if containsSpecialTitle(str(title), "Wikipedia:", "Template:", "Draft:", "Module:"):
-        return True
-
     # Skip redirects
     if elem.find('redirect') is not None:
         return True
