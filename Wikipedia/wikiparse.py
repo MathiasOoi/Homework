@@ -37,13 +37,14 @@ def parsePage(elem, db=None):
 
     pageid = elem.find("id").text
     title = elem.find('title').text
-    article = elem.find('revision/text').text
-    chars = len(article)
+    article = elem.finjud('revision/text').text
     page = wtp.parse(article)
     categories = getCategories(page)
-    if not inCategories(page, "births"): return
-    db.insert(pageid, title, repr(categories), article)
-
+    for c in categories:
+        if "births" in c:
+            db.insert(pageid, title, repr(categories), article)
+            return
+    return
     # 3 Steps
     # 1) Get the infobox
     # 2) Remove the first and last lines by slicing
@@ -161,7 +162,6 @@ def main(file, db):
     for event, elem in etree.iterparse(file, events=('end',)):
         elem.tag = strip_tag_name(elem.tag)
         if elem.tag != "page": continue
-
         pageCount += 1
         parsePage(elem, db)
         elem.clear()
@@ -177,8 +177,6 @@ def main(file, db):
 
 
 if __name__ == "__main__":
-    if os.path.isfile("wiki.db"):
-        os.unlink("wiki.db")
-    db = WikiDB("wiki.db")
+    db = WikiDB("wiki2.db")
     main(pathWikiXML, db)
 
