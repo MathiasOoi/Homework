@@ -37,7 +37,7 @@ def parsePage(elem, db=None):
 
     pageid = elem.find("id").text
     title = elem.find('title').text
-    article = elem.finjud('revision/text').text
+    article = elem.find('revision/text').text
     page = wtp.parse(article)
     categories = getCategories(page)
     for c in categories:
@@ -177,6 +177,6 @@ def main(file, db):
 
 
 if __name__ == "__main__":
-    db = WikiDB("wiki2.db")
+    db = WikiDB("wiki.db")
     main(pathWikiXML, db)
 
