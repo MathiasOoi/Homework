@@ -1,7 +1,7 @@
 import os
 import xlrd
 
-file = "C:\\Users\\mathi\\PycharmProjects\\chrisitna_hw\\2020stock\\2020-2021-Approved-Stock-List-converted.xlsx"
+file = os.getcwd() + "\\2020-2021-Approved-Stock-List-converted.xlsx"
 
 wb = xlrd.open_workbook(file)
 sheet1 = wb.sheet_by_index(1)
