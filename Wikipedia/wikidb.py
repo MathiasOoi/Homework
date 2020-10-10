@@ -30,9 +30,22 @@ class WikiDB:
         """, (pageid, title, categories, zarticle))
         self.maybe_commit()
 
-    def iterate(self):
+    def __iter__(self):
         for (pageid, title, categories, zarticle) in self.conn.execute('''
-        SELECT * FROM articlesds;
+        SELECT * FROM articles;
       '''):
             article = zlib.decompress(zarticle).decode('utf-8')
             yield (pageid, title, categories, article)
+    def iterCatergories(self):
+        for categories in self.conn.execute("""
+        SELECT categories FROM articles;
+        """):
+            yield
+    def iterRandom(self, e):
+        for (pageid, title, categories, zarticle) in self.conn.execute('''
+                SELECT * FROM articles order by random() limit {};
+              '''.format(str(e))):
+            article = zlib.decompress(zarticle).decode('utf-8')
+            yield (pageid, title, categories, article)
+
+
