@@ -92,7 +92,7 @@ def getTemplate(page, template):
 
 
 def getCategories(page):
-    s = page.get_sections()[-1].string
+    s = page.string
     categories = s[s.find("[[Category:"):].split("\n")
     return categories
 
@@ -162,6 +162,10 @@ def main(file, db):
     for event, elem in etree.iterparse(file, events=('end',)):
         elem.tag = strip_tag_name(elem.tag)
         if elem.tag != "page": continue
+        print(elem.find("title").text)
+        if elem.find("title").text in ["List of heads of government of Russia", "2014 Roger Federer tennis season", "Results of the 2019 Canadian federal election by riding"]:
+            elem.clear()
+            continue
         pageCount += 1
         parsePage(elem, db)
         elem.clear()
